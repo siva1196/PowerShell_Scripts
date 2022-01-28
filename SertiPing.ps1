@@ -4,7 +4,7 @@
     $Location = @()
     $PManager = @()
     $ServerDownCount = 0
-
+    
     $ServerList = Import-csv 'C:\Users\coramals\Desktop\Serti.csv' |`
 
     ForEach-Object{
@@ -15,8 +15,12 @@
         $PManager+=$_."Plant manager"
 
     }
-
+    
+    Write-Host ""
     Write-Host(Get-Date)
+    Write-Host ""
+    Write-Host "*********SERTI**********"
+    Write-Host ""
 
     foreach ($Server in $Servers){
 
@@ -24,19 +28,36 @@
 
             if($Ping){ 
 
-                Write-Host "$Server is Online" -BackgroundColor Green
+                $Status = "Online"
+
+                $obj = new-object psobject -Property @{
+
+                    Server = $server
+                    Status = $Status
+                } 
 
             }
 
             else {
         
-                Write-Host "$Server is Offline" -BackgroundColor Red
+                $Status = "Offline"
+
+                $obj = new-object psobject -Property @{
+
+                    Server = $server
+                    Status = $Status
+                } 
+
                 $ServerDownCount +=1
             }
 
+            $obj
         }
-        Write-Host "Server down Count = $ServerDownCount"
+        $obj = $null
 
+        Write-Host ""
+        Write-Host "Server down Count = $ServerDownCount"
+        Write-Host ""
         Write-Host -NoNewline "Pausing "
 
         for($s=0; $s -le 5; $s++){
